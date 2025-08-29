@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>田思灵宝宝</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #ffe6f2 0%, #ffc2e0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            padding: 2.5rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 2;
+        }
+        h1 {
+            color: #e6005c;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        #loveMessage {
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            min-height: 6rem;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+        #generateBtn {
+            background: linear-gradient(to right, #e6005c, #ff4d94);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(230, 0, 92, 0.3);
+        }
+        #generateBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 0, 92, 0.4);
+        }
+        #generateBtn:active {
+            transform: translateY(1px);
+        }
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4d94' width='24px' height='24px'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat;
+            background-size: contain;
+            opacity: 0;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        .footer {
+            margin-top: 2rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        /* 添加底部祝福语样式 */
+        .blessing {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #e6005c;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            z-index: 10;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="heartsContainer"></div>
+    
+    <div class="container">
+        <h1>❤️ 七夕快乐，我的阿灵！ ❤️</h1>
+        <p id="loveMessage">点击下面的按钮，收获今日份的甜蜜~</p>
+        <button id="generateBtn">戳我呀</button>
+        <div class="footer">每一句话都是我的真心 ❤</div>
+    </div>
+    
+    <!-- 添加底部祝福语 -->
+    <div class="blessing">宝贝，七夕快乐！—— 永远爱你的阿姚</div>
+
+    <script>
+        // 情话数组 - 已修复缺少逗号的问题
+        const messages = [
+            "今天比昨天更加喜欢你，明天也会更多。",
+            "遇见你，是我这辈子最幸运的事。",
+            "你的笑容，就是我最大的动力。",
+            "想和你一起吃很多很多顿饭，看很多很多场电影。",
+            "在我这里，你可以永远做一个小女孩。",
+            "斯人若彩虹，遇上方知有。",
+            "晚安，明天见（每天都会想你）。",
+            "阿灵，和你在一起的每分每秒，都甜过我吃过的所有糖。",
+            "看到好看的云、有趣的事，第一反应永远是想分享给阿灵。",
+            "阿灵的小情绪我都想接住，你的开心我更想好好守护。",
+            "不管走多远的路，只要身边是阿灵，就一点都不觉得累。",
+            "阿灵，我想把未来的每一个计划里，都认认真真写上你的名字。",
+            "就算日子再平凡，只要阿灵在身边，就满是欢喜和期待。",
+            "每次和阿灵分开后，就开始偷偷期待下一次见面啦。",
+            "阿灵的声音像小太阳，不管什么时候听，都能让我心情变好。",
+            "我想把全世界的温柔都攒起来，一点一点全部给阿灵。",
+            "只要想到阿灵，就觉得自己是全世界最幸福的人。",
+            "阿灵，就算我们老了，我也想牵着你的手，慢慢逛公园晒太阳。",
+            "不管发生什么事，我都会站在阿灵这边，做你最靠谱的后盾。",
+            "每天睡前都会想，明天能见到阿灵，真是太好啦。",
+            "阿灵，早上醒来第一念头不是赖床，是想知道你今天有没有睡好。",
+            "路过甜品店总忍不住停下，想着阿灵会不会喜欢这款草莓蛋糕。",
+            "阿灵随口说的小事我都记着，不是记性好，是你说的话都重要。",
+            "就算只是和阿灵并肩坐着发呆，也觉得比任何热闹都舒服。",
+            "阿灵笑的时候眼睛会弯成小月亮，每次看到都想偷偷拍下来。",
+            "我手机里存满了阿灵的照片，有的是你知道的，有的是偷偷抓拍的。",
+            "阿灵偶尔的小迷糊一点都不可笑，反而觉得特别可爱，想帮你把小事都打理好。",
+            "天气冷的时候，总想着要是能把阿灵的手揣进我口袋里就好。",
+            "每次和阿灵打电话，就算没话说也不想挂，听着你的呼吸声都安心。",
+            "看到别人情侣吵架，我就庆幸，和阿灵在一起连拌嘴都像在撒娇。",
+            "阿灵，你不用怕麻烦我，你的事对我来说从来都不是麻烦。",
+            "我规划的未来里，每一个场景都有阿灵，少了你就不完整。",
+            "阿灵穿新衣服的时候，我总忍不住多看几眼，觉得我女朋友怎么这么好看。",
+            "阿灵，我想陪你去你想去的每一个地方，不管是远的还是近的。",
+            "阿灵不开心的时候，我比你还着急，就想赶紧把你的坏情绪赶走。",
+            "和阿灵一起吃路边摊，都觉得比高级餐厅的大餐还香。",
+            "阿灵，我想每天都能给你一个拥抱，让你知道我一直都在。",
+            "听到好听的歌，第一反应就是分享给阿灵，想和你有一样的喜好。",
+            "阿灵，你就像我的专属小太阳，不管我心情多差，你一出现就亮了。",
+            "我攒了好多好多的小笑话，就想在阿灵不开心的时候讲给你听。",
+            "每次和阿灵分开，都忍不住回头看几眼，想把你的样子多记一会儿。",
+            "阿灵，你说的每一句喜欢，我都偷偷记在心里，反复回味。",
+            "看到阿灵认真工作或学习的样子，就觉得特别着迷，想一直陪着你。",
+            "我想把阿灵的生日、我们的纪念日都刻在心里，永远不会忘记。",
+            "阿灵，就算以后我们老了，我也会像现在一样，牵着你的手过马路。",
+            "和阿灵一起看星星的时候，总觉得时间过得好慢，想一直这样下去。",
+            "就算阿灵犯了小错误，我也不会怪你，只会想怎么帮你解决。",
+            "阿灵，你身上的味道好好闻，每次靠近你都觉得特别安心。",
+            "我想和阿灵一起看遍春夏秋冬的风景，春天看花开，冬天看雪落。",
+            "每次和阿灵视频，都忍不住盯着屏幕看，好像这样就能离你近一点。",
+            "阿灵，我想把我所有的偏爱都给你，让你知道你在我这里最特别。",
+            "看到阿灵和小朋友玩得开心的样子，就觉得特别温暖，想和你有个家。",
+            "阿灵，就算我们偶尔吵架，我也不会让你带着情绪睡觉。",
+            "我想和阿灵一起学一道菜，就算做得不好吃，也觉得很开心。",
+            "阿灵，你笑的时候会传染我，不管我多不开心，看到你笑就好了。",
+            "每次和阿灵去旅行，都觉得特别开心，因为身边有你。",
+            "阿灵，我想把我所有的小秘密都告诉你，因为你是我最信任的人。",
+            "看到阿灵帮别人的样子，就觉得我女朋友怎么这么善良。",
+            "阿灵，就算以后日子过得平淡，我也会给你制造小惊喜。",
+            "我想和阿灵一起看一场日出，看着太阳慢慢升起来，就像我们的未来。",
+            "每次和阿灵一起听音乐，都觉得特别惬意，想一直这样下去。",
+            "阿灵，我想每天都能对你说一句我爱你，让你每天都甜甜的。",
+            "我想和阿灵一起养一盆花，看着它慢慢长大，就像我们的感情。",
+            "阿灵，你不用刻意讨好谁，在我这里你做自己就好。",
+            "每次和阿灵一起逛超市，都觉得特别有生活气息，想和你过一辈子。",
+            "阿灵，我想把我所有的好运都分给你，让你每天都顺顺利利的。",
+            "看到阿灵打哈欠的样子，觉得特别可爱，想让你好好休息。",
+            "我想和阿灵一起看一部很长的电视剧，每天看一点，慢慢看完。",
+            "阿灵，你说的每一个梦想，我都想帮你实现。",
+            "每次和阿灵一起吃火锅，都觉得特别热闹，想一直这样热热闹闹的。",
+            "阿灵，我想每天都能帮你吹头发，看着你的头发慢慢变干。",
+            "看到阿灵穿着我的衣服，觉得特别可爱，想把所有好的都给你。",
+            "阿灵，就算我们老了，我也会给你讲我们年轻时的故事。",
+            "我想和阿灵一起去看一场演唱会，跟着音乐一起唱歌，一起欢呼。",
+            "阿灵，你不用怕黑，我会一直陪着你，给你开灯，给你讲故事。",
+            "每次和阿灵一起散步，都觉得特别放松，想一直这样牵着你的手。",
+            "阿灵，我想把我所有的温柔都给你，让你每天都被幸福包围。",
+            "看到阿灵认真化妆的样子，就觉得特别好看，想一直看着你。",
+            "阿灵，就算以后我生病了，也不想让你担心，想一直保护你。",
+            "我想和阿灵一起做手工，就算做得不好看，也觉得很有意义。",
+            "阿灵，你不用急着长大，在我这里你可以永远是个小孩子。",
+            "每次和阿灵一起看电影，都想把肩膀借给你靠，让你觉得安心。",
+            "阿灵，我想每天都能给你道晚安，让你带着我的祝福睡觉。",
+            "看到阿灵吃好吃的东西，觉得特别有食欲，想和你一起吃遍所有美食。",
+            "阿灵，就算以后我们吵架了，我也会先低头，因为我不想失去你。",
+            "我想和阿灵一起去海边，踩在沙滩上，听着海浪声，看着日落。",
+            "每次和阿灵一起玩游戏，都觉得特别开心，就算输了也没关系。",
+            "阿灵，我想把我所有的时间都用来陪你，因为你比什么都重要。",
+            "看到阿灵照顾我的样子，就觉得特别温暖，想一直和你在一起。",
+            "阿灵，就算以后我们住的房子不大，只要有你就很温馨。",
+            "阿灵，你不用怕孤单，我会一直陪着你，不管什么时候。",
+            "每次和阿灵一起过节日，都觉得特别有意义，因为有你的陪伴。",
+            "阿灵，我想把我所有的爱都给你，让你成为最幸福的人。",
+            "看到阿灵对着镜子臭美的样子，觉得特别可爱，想一直宠着你。",
+            "阿灵，就算以后我工作很忙，也会抽出时间陪你，不会让你孤单。",
+            "我想和阿灵一起去爬山，站在山顶上，看着远方，一起许愿。",
+            "每次和阿灵一起喝奶茶，都想把珍珠留给你，因为你喜欢。",
+            "阿灵，我想和你一起慢慢变老，直到我们都走不动路。",
+            "阿灵，就算以后我们的感情归于平淡，我也会一直爱着你。",
+            "我想和阿灵一起记录我们的每一天，不管是开心的还是不开心的。",
+            "每次和阿灵一起看烟花，都觉得特别浪漫，想把这一刻永远记住。",
+            "阿灵，我想每天都能看到你的笑脸，因为你的笑容是我最大的幸福。"
+        ];
+
+        const messageElement = document.getElementById('loveMessage');
+        const generateBtn = document.getElementById('generateBtn');
+        const heartsContainer = document.getElementById('heartsContainer');
+
+        // 创建漂浮爱心
+        function createHearts() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animation = `float ${5 + Math.random() * 5}s linear forwards`;
+                    heartsContainer.appendChild(heart);
+                    
+                    // 移除爱心元素以避免DOM过度拥挤
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 10000);
+                }, i * 300);
+            }
+        }
+
+        // 初始加载时创建一些爱心
+        createHearts();
+        // 每隔一段时间创建新的爱心
+        setInterval(createHearts, 5000);
+
+        generateBtn.addEventListener('click', () => {
+            // 随机选择一条情话
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            messageElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                messageElement.textContent = messages[randomIndex];
+                messageElement.style.opacity = 1;
+                
+                // 创建点击时的爱心效果
+                createHearts();
+            }, 300);
+        });
+    </script>
+</body>
+</html>
